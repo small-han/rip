@@ -32,13 +32,46 @@ void rtinit2()
   dt2.costs[2][2] = 0;
   dt2.costs[2][3] = 2;
   printdt2(&dt2);
+  send_packet2();
 }
 
+void send_packet2()
+{
+  struct rtpkt mypkt;
+  mypkt.sourceid=2;
+  int i=0;
+  for (i=0;i<=3;i++)
+  {
+    mypkt.mincost[i]=dt2.costs[2][i];
+  }
+  mypkt.destid=0;
+  tolayer2(mypkt);
+  mypkt.destid=1;
+  tolayer2(mypkt);
+  mypkt.destid=3;
+  tolayer2(mypkt);
+}
 
 void rtupdate2(rcvdpkt)
   struct rtpkt *rcvdpkt;
   
 {
+  int i = 0;
+  int flag=0;
+  // printf("src=%d,dst=%d\ndata=%3d  %3d  %3d  %3d  \n", rcvdpkt->sourceid, rcvdpkt->destid, rcvdpkt->mincost[0], rcvdpkt->mincost[1], rcvdpkt->mincost[2], rcvdpkt->mincost[3]);
+  for (i = 0; i <= 3; i++)
+    dt2.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+  for (i = 0; i <= 3; i++)
+  {
+    if (dt2.costs[2][i] > (dt2.costs[2][rcvdpkt->sourceid] + dt2.costs[rcvdpkt->sourceid][i]))
+    {
+      dt2.costs[2][i] = dt2.costs[2][rcvdpkt->sourceid] + dt2.costs[rcvdpkt->sourceid][i];
+      flag=1;
+    }
+  }
+  printdt2(&dt2);
+  if(flag)
+    send_packet2();
 
 }
 

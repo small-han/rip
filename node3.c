@@ -31,14 +31,45 @@ void rtinit3()
   dt3.costs[3][2] = 2;
   dt3.costs[3][3] = 0;
   printdt3(&dt3);
+  send_packet3();
 }
 
+void send_packet3()
+{
+  struct rtpkt mypkt;
+  mypkt.sourceid=3;
+  int i=0;
+  for (i=0;i<=3;i++)
+  {
+    mypkt.mincost[i]=dt3.costs[3][i];
+  }
+  mypkt.destid=0;
+  tolayer2(mypkt);
+  mypkt.destid=2;
+  tolayer2(mypkt);
+}
 
 void rtupdate3(rcvdpkt)
   struct rtpkt *rcvdpkt;
   
 {
 
+  int i = 0;
+  int flag=0;
+  // printf("src=%d,dst=%d\ndata=%3d  %3d  %3d  %3d  \n", rcvdpkt->sourceid, rcvdpkt->destid, rcvdpkt->mincost[0], rcvdpkt->mincost[1], rcvdpkt->mincost[2], rcvdpkt->mincost[3]);
+  for (i = 0; i <= 3; i++)
+    dt3.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+  for (i = 0; i <= 3; i++)
+  {
+    if (dt3.costs[3][i] > (dt3.costs[3][rcvdpkt->sourceid] + dt3.costs[rcvdpkt->sourceid][i]))
+    {
+      dt3.costs[3][i] = dt3.costs[3][rcvdpkt->sourceid] + dt3.costs[rcvdpkt->sourceid][i];
+      flag=1;
+    }
+  }
+  printdt3(&dt3);
+  if(flag)
+    send_packet3();
 }
 
 
