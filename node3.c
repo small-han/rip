@@ -18,8 +18,19 @@ struct distance_table
 
 /* students to write the following two routines, and maybe some others */
 
+static int me=3;
+
 void rtinit3() 
 {
+  int i = 0, j = 0;
+  for (i = 0; i <= 3; i++)
+    for (j = 0; j <= 3; j++)
+      dt3.costs[i][j] = 999;
+  dt3.costs[3][0] = 7;
+  dt3.costs[3][1] = 999;
+  dt3.costs[3][2] = 2;
+  dt3.costs[3][3] = 0;
+  printdt3(&dt3);
 }
 
 
@@ -35,12 +46,17 @@ printdt3(dtptr)
   struct distance_table *dtptr;
   
 {
-  printf("             via     \n");
-  printf("   D3 |    0     2 \n");
-  printf("  ----|-----------\n");
-  printf("     0|  %3d   %3d\n",dtptr->costs[0][0], dtptr->costs[0][2]);
-  printf("dest 1|  %3d   %3d\n",dtptr->costs[1][0], dtptr->costs[1][2]);
-  printf("     2|  %3d   %3d\n",dtptr->costs[2][0], dtptr->costs[2][2]);
+  printf("   D3 |    0     1    2    3\n");
+  printf("  ----|--------------------\n");
+  printf("     0|  %3d   %3d   %3d   %3d\n", dtptr->costs[0][0],
+         dtptr->costs[0][1], dtptr->costs[0][2], dtptr->costs[0][3]);
+  printf("     1|  %3d   %3d   %3d   %3d\n", dtptr->costs[1][0], dtptr->costs[1][1],
+         dtptr->costs[1][2], dtptr->costs[1][3]);
+  printf("dest 2|  %3d   %3d   %3d   %3d\n", dtptr->costs[2][0], dtptr->costs[2][1],
+         dtptr->costs[2][2], dtptr->costs[2][3]);
+  printf("     3|  %3d   %3d   %3d   %3d\n", dtptr->costs[3][0], dtptr->costs[3][1],
+         dtptr->costs[3][2], dtptr->costs[3][3]);
+  printf("\n");
 
 }
 

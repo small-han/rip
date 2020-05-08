@@ -11,7 +11,6 @@ extern struct rtpkt
 extern int TRACE;
 extern int YES;
 extern int NO;
-static int me = 0;
 
 struct distance_table
 {
@@ -22,15 +21,15 @@ struct distance_table
 
 void rtinit0()
 {
-  dt0.costs[me][0] = 0;
-  dt0.costs[me][1] = 1;
-  dt0.costs[me][2] = 3;
-  dt0.costs[me][3] = 7;
   int i = 0, j = 0;
   for (i = 0; i <= 3; i++)
-    if (i != me)
-      for (j = 0; j <= 3; j++)
-        dt0.costs[me][j] = 999;
+    for (j = 0; j <= 3; j++)
+      dt0.costs[i][j] = 999;
+  dt0.costs[0][0] = 0;
+  dt0.costs[0][1] = 1;
+  dt0.costs[0][2] = 3;
+  dt0.costs[0][3] = 7;
+  printdt0(&dt0);
 }
 
 void rtupdate0(rcvdpkt) struct rtpkt *rcvdpkt;
@@ -40,15 +39,17 @@ void rtupdate0(rcvdpkt) struct rtpkt *rcvdpkt;
 printdt0(dtptr) struct distance_table *dtptr;
 
 {
-  printf("                via     \n");
-  printf("   D0 |    1     2    3 \n");
-  printf("  ----|-----------------\n");
-  printf("     1|  %3d   %3d   %3d\n", dtptr->costs[1][1],
+  printf("   D0 |    0     1    2    3\n");
+  printf("  ----|--------------------\n");
+  printf("     0|  %3d   %3d   %3d   %3d\n", dtptr->costs[0][0],
+         dtptr->costs[0][1], dtptr->costs[0][2], dtptr->costs[0][3]);
+  printf("     1|  %3d   %3d   %3d   %3d\n", dtptr->costs[1][0], dtptr->costs[1][1],
          dtptr->costs[1][2], dtptr->costs[1][3]);
-  printf("dest 2|  %3d   %3d   %3d\n", dtptr->costs[2][1],
+  printf("dest 2|  %3d   %3d   %3d   %3d\n", dtptr->costs[2][3], dtptr->costs[2][1],
          dtptr->costs[2][2], dtptr->costs[2][3]);
-  printf("     3|  %3d   %3d   %3d\n", dtptr->costs[3][1],
+  printf("     3|  %3d   %3d   %3d   %3d\n", dtptr->costs[3][3], dtptr->costs[3][1],
          dtptr->costs[3][2], dtptr->costs[3][3]);
+  printf("\n");
 }
 
 linkhandler0(linkid, newcost) int linkid, newcost;
